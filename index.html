@@ -73,6 +73,66 @@
     font-size: 14px;
     margin-left: 8px;
 }
+          /* This aligns the link and banner side-by-side */
+  .exam-list-item {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: space-between; /* Push banner to the right */
+    flex-wrap: wrap; /* Allows wrapping on mobile screens */
+    gap: 10px; /* Spacing between link and banner */
+    padding: 10px 0;
+  }
+
+  /* Style for your existing link (optional, keeps it looking nice) */
+  .spelling-link {
+    font-size: 16px;
+    color: #4a148c; /* Dark purple matching your image */
+    text-decoration: underline;
+  }
+
+  /* Container for the Banner */
+  .free-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0f8ff; /* Light blue background */
+    border: 1px solid #cce5ff;
+    padding: 5px 10px;
+    border-radius: 8px;
+  }
+
+  /* The text "Only 8 words free" */
+  .free-text {
+    font-size: 13px;
+    color: #555;
+    font-weight: bold;
+  }
+
+  /* The WhatsApp Button */
+  .unlock-btn {
+    background-color: #25D366; /* Official WhatsApp Green */
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: background 0.3s;
+    text-transform: uppercase;
+  }
+
+  .unlock-btn:hover {
+    background-color: #128C7E; /* Darker green on hover */
+    color: white;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 600px) {
+    .exam-list-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
     </style>
 </head>
 <body>
@@ -87,6 +147,21 @@
         <a class="button" href="FinalList.html">
         Cinderella Term 1 Final Exam Spelling List
     </a>
+    <!-- The Container for the link and banner -->
+<div class="exam-list-item">
+
+  <!-- Your existing link -->
+  <a href="#" class="spelling-link">Cinderella Term 1 Final Exam Spelling List</a>
+
+  <!-- The New Banner -->
+  <div class="free-banner">
+    <span class="free-text">🎁 Only 8 words free</span>
+    <a href="https://wa.me/962787493283" target="_blank" class="unlock-btn">
+      Unlock Full 30 Words
+    </a>
+  </div>
+
+</div>
 
 </section>
 
