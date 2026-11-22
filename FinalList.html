@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Listen &amp; Spell — Spelling Studio</title>
+<style>
+:root {
+--bg-gradient: linear-gradient(135deg, #eef4ff 0%, #f8f2ff 50%, #ecfdf5 100%);
+--card-bg: #ffffff;
+--primary: #4f46e5;
+--primary-hover: #4338ca;
+--primary-soft: #eef2ff;
+--secondary: #0ea5e9;
+--secondary-hover: #0284c7;
+--success: #16a34a;
+--success-soft: #dcfce7;
+--warning: #d97706;
+--warning-soft: #fef3c7;
+--danger: #dc2626;
+--danger-soft: #fee2e2;
+--text-main: #1e293b;
+--text-muted: #64748b;
+--border: #e2e8f0;
+--radius-lg: 22px;
+--radius-md: 14px;
+--radius-sm: 10px;
+--shadow: 0 18px 40px -15px rgba(30, 41, 59, 0.14);
+}
+
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+min-height: 100vh;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background: var(--bg-gradient);
+color: var(--text-main);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+line-height: 1.5;
+}
+
+.app-container {
+width: 100%;
+max-width: 720px;
+background: var(--card-bg);
+border-radius: var(--radius-lg);
+box-shadow: var(--shadow);
+padding: 28px 32px 34px;
+border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+header {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+margin-bottom: 18px;
+}
+
+.brand {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.brand-badge {
+width: 48px;
+height: 48px;
+border-radius: 14px;
+background: linear-gradient(135deg, var(--primary), var(--secondary));
+color: #fff;
+display: grid;
+place-items: center;
+font-size: 1.5rem;
+font-weight: 700;
+flex-shrink: 0;
+}
+
+h1 {
+margin: 0;
+font-size: 1.55rem;
+font-weight: 800;
+letter-spacing: -0.02em;
+}
+
+.subtitle {
+margin: 2px 0 0;
+font-size: 0.92rem;
+color: var(--text-muted);
+}
+
+.mode-pill {
+padding: 6px 14px;
+border-radius: 999px;
+font-size: 0.85rem;
+font-weight: 700;
+background: var(--primary-soft);
+color: var(--primary);
+}
+
+.mode-pill.review-mode {
+background: var(--warning-soft);
+color: #92400e;
+}
+
+.progress-section {
+margin-bottom: 22px;
+}
+
+.progress-meta {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.92rem;
+font-weight: 600;
+color: var(--text-muted);
+margin-bottom: 8px;
+gap: 10px;
+flex-wrap: wrap;
+}
+
+.progress-track {
+width: 100%;
+height: 12px;
+background: #e2e8f0;
+border-radius: 999px;
+overflow: hidden;
+}
+
+.progress-fill {
+height: 100%;
+width: 0%;
+background: linear-gradient(90deg, var(--primary), var(--secondary));
+border-radius: 999px;
+transition: width 0.35s ease;
+}
+
+.stats-bar {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+margin-bottom: 24px;
+}
+
+.stat-box {
+background: #f8fafc;
+border: 1px solid var(--border);
+border-radius: var(--radius-sm);
+padding: 10px 12px;
+text-align: center;
+}
+
+.stat-label {
+display: block;
+font-size: 0.78rem;
+text-transform: uppercase;
+letter-spacing: 0.04em;
+color: var(--text-muted);
+font-weight: 700;
+}
+
+.stat-value {
+font-size: 1.25rem;
+font-weight: 800;
+color: var(--text-main);
+}
+
+.audio-panel {
+background: linear-gradient(135deg, #f0f9ff 0%, #eef2ff 100%);
+border: 2px solid #dbeafe;
+border-radius: var(--radius-md);
+padding: 22px 18px;
+text-align: center;
+margin-bottom: 20px;
+}
+
+.audio-prompt-text {
+margin: 0 0 14px;
+font-size: 1rem;
+font-weight: 600;
+color: var(--text-main);
+}
+
+.audio-controls {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 12px;
+}
+
+button {
+font-family: inherit;
+cursor: pointer;
+border: none;
+border-radius: var(--radius-sm);
+font-weight: 700;
+transition: transform 0.12s ease, background-color 0.18s ease, opacity 0.18s ease;
+min-height: 48px;
+}
+
+button:active:not(:disabled) {
+transform: scale(0.98);
+}
+
+button:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+.btn-listen-main {
+background: var(--primary);
+color: #ffffff;
+font-size: 1.12rem;
+padding: 14px 26px;
+min-height: 56px;
+box-shadow: 0 8px 18px -6px rgba(79, 70, 229, 0.5);
+}
+
+.btn-listen-main:hover:not(:disabled) {
+background: var(--primary-hover);
+}
+
+.btn-audio-secondary {
+background: #ffffff;
+color: var(--text-main);
+border: 2px solid #cbd5e1;
+font-size: 0.98rem;
+padding: 12px 18px;
+}
+
+.btn-audio-secondary:hover:not(:disabled) {
+background: #f1f5f9;
+border-color: #94a3b8;
+}
+
+.audio-warning {
+margin-top: 12px;
+padding: 10px 14px;
+border-radius: var(--radius-sm);
+background: var(--warning-soft);
+color: #92400e;
+font-size: 0.9rem;
+font-weight: 600;
+display: none;
+}
+
+.input-group {
+margin-bottom: 16px;
+}
+
+label[for="spellingInput"] {
+display: block;
+font-weight: 700;
+font-size: 0.98rem;
+margin-bottom: 8px;
+}
+
+.spelling-input {
+width: 100%;
+font-family: inherit;
+font-size: 1.35rem;
+font-weight: 600;
+padding: 15px 18px;
+border: 2.5px solid #cbd5e1;
+border-radius: var(--radius-md);
+color: var(--text-main);
+background: #ffffff;
+outline: none;
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.spelling-input:focus {
+border-color: var(--primary);
+box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.14);
+}
+
+.action-buttons {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 18px;
+}
+
+.btn-primary {
+background: var(--primary);
+color: #ffffff;
+padding: 13px 22px;
+font-size: 1rem;
+flex: 1 1 160px;
+}
+
+.btn-primary:hover:not(:disabled) {
+background: var(--primary-hover);
+}
+
+.btn-secondary {
+background: #f1f5f9;
+color: var(--text-main);
+border: 1.5px solid #cbd5e1;
+padding: 13px 18px;
+font-size: 0.96rem;
+}
+
+.btn-secondary:hover:not(:disabled) {
+background: #e2e8f0;
+}
+
+.btn-reveal {
+background: #fffbeb;
+color: #92400e;
+border: 1.5px solid #fcd34d;
+padding: 13px 18px;
+font-size: 0.96rem;
+}
+
+.btn-reveal:hover:not(:disabled) {
+background: #fef3c7;
+}
+
+.btn-next {
+background: var(--success);
+color: #ffffff;
+padding: 13px 24px;
+font-size: 1.02rem;
+flex: 1 1 180px;
+}
+
+.btn-next:hover:not(:disabled) {
+background: #15803d;
+}
+
+.feedback-box {
+border-radius: var(--radius-md);
+padding: 16px 18px;
+font-size: 1rem;
+font-weight: 600;
+display: none;
+margin-bottom: 10px;
+}
+
+.feedback-box.success {
+display: block;
+background: var(--success-soft);
+color: #14532d;
+border: 1.5px solid #86efac;
+}
+
+.feedback-box.error {
+display: block;
+background: var(--danger-soft);
+color: #7f1d1d;
+border: 1.5px solid #fca5a5;
+}
+
+.feedback-box.info {
+display: block;
+background: var(--warning-soft);
+color: #78350f;
+border: 1.5px solid #fcd34d;
+}
+
+.revealed-word {
+display: inline-block;
+margin-top: 6px;
+padding: 4px 12px;
+border-radius: 8px;
+background: rgba(255, 255, 255, 0.85);
+font-size: 1.18rem;
+font-weight: 800;
+letter-spacing: 0.03em;
+}
+
+.summary-card {
+text-align: center;
+padding: 10px 4px;
+}
+
+.summary-title {
+margin: 0 0 8px;
+font-size: 1.65rem;
+font-weight: 800;
+}
+
+.summary-subtitle {
+margin: 0 0 22px;
+color: var(--text-muted);
+font-size: 1rem;
+}
+
+.score-highlight {
+background: linear-gradient(135deg, #eef2ff, #f0fdf4);
+border: 2px solid #c7d2fe;
+border-radius: var(--radius-md);
+padding: 20px;
+margin-bottom: 22px;
+}
+
+.score-big {
+font-size: 2.3rem;
+font-weight: 900;
+color: var(--primary);
+line-height: 1.1;
+}
+
+.score-detail {
+margin-top: 6px;
+font-size: 1rem;
+color: var(--text-main);
+font-weight: 600;
+}
+
+.word-list-box {
+text-align: left;
+background: #f8fafc;
+border: 1.5px solid var(--border);
+border-radius: var(--radius-md);
+padding: 16px 20px;
+margin-bottom: 22px;
+}
+
+.word-list-box h3 {
+margin: 0 0 10px;
+font-size: 1rem;
+color: var(--text-main);
+}
+
+.word-pills {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.word-pill {
+background: #ffffff;
+border: 1px solid #cbd5e1;
+border-radius: 999px;
+padding: 6px 14px;
+font-size: 0.92rem;
+font-weight: 700;
+color: var(--text-main);
+}
+
+.summary-actions {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 12px;
+}
+
+.hidden {
+display: none !important;
+}
+
+@media (max-width: 600px) {
+.app-container {
+padding: 20px 16px 24px;
+border-radius: 16px;
+}
+
+h1 {
+font-size: 1.32rem;
+}
+
+.stats-bar {
+grid-template-columns: 1fr;
+}
+
+.btn-listen-main {
+width: 100%;
+}
+
+.spelling-input {
+font-size: 1.2rem;
+}
+}
+</style>
+</head>
+<body>
+<main class="app-container" aria-live="polite">
+<header>
+<div class="brand">
+<div class="brand-badge" aria-hidden="true">Aa</div>
+<div>
+<h1>Listen &amp; Spell</h1>
+<p class="subtitle">Listen carefully, type the spelling, and build your mastery</p>
+</div>
+</div>
+<span id="modePill" class="mode-pill">Main Spelling Round</span>
+</header>
+
+<!-- Progress Section -->
+<section class="progress-section" aria-label="Progress">
+<div class="progress-meta">
+<span id="progressLabel">Word 1 of 18</span>
+<span id="progressPercentText">0% complete</span>
+</div>
+<div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBarTrack">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+</section>
+
+<!-- Stats Bar (Main Game) -->
+<section id="mainStatsBar" class="stats-bar" aria-label="Game Score">
+<div class="stat-box">
+<span class="stat-label">Correct</span>
+<span class="stat-value" id="statCorrect">0</span>
+</div>
+<div class="stat-box">
+<span class="stat-label">Incorrect Tries</span>
+<span class="stat-value" id="statIncorrect">0</span>
+</div>
+<div class="stat-box">
+<span class="stat-label">Score</span>
+<span class="stat-value" id="statScore">0 / 18</span>
+</div>
+</section>
+
+<!-- Stats Bar (Review Round) -->
+<section id="reviewStatsBar" class="stats-bar hidden" aria-label="Review Progress">
+<div class="stat-box">
+<span class="stat-label">Reviewed</span>
+<span class="stat-value" id="reviewCountReviewed">0</span>
+</div>
+<div class="stat-box">
+<span class="stat-label">Remaining</span>
+<span class="stat-value" id="reviewCountRemaining">0</span>
+</div>
+<div class="stat-box">
+<span class="stat-label">Needs Practice</span>
+<span class="stat-value" id="reviewCountPractice">0</span>
+</div>
+</section>
+
+<!-- Active Spelling Question View -->
+<section id="questionView">
+<div class="audio-panel">
+<p class="audio-prompt-text" id="questionPrompt">Click <strong>Listen to the Word</strong> to hear your word, then type how you spell it.</p>
+<div class="audio-controls">
+<button type="button" id="btnListenMain" class="btn-listen-main">🔊 Listen to the Word</button>
+<button type="button" id="btnListenAgain" class="btn-audio-secondary">🔁 Listen Again</button>
+<button type="button" id="btnListenSlow" class="btn-audio-secondary">🐢 Slow Pronunciation</button>
+</div>
+<div id="audioWarning" class="audio-warning" role="alert">
+Speech synthesis is unavailable or blocked in this browser. Please try a modern browser with text-to-speech enabled.
+</div>
+</div>
+
+<div class="input-group">
+<label for="spellingInput">Type the word you hear:</label>
+<input
+type="text"
+id="spellingInput"
+class="spelling-input"
+autocomplete="off"
+autocapitalize="off"
+autocorrect="off"
+spellcheck="false"
+placeholder="Type your spelling here..."
+/>
+</div>
+
+<div class="action-buttons">
+<button type="button" id="btnCheck" class="btn-primary">Check Answer</button>
+<button type="button" id="btnTryAgain" class="btn-secondary hidden">Try Again</button>
+<button type="button" id="btnReveal" class="btn-reveal">Show Correct Spelling</button>
+<button type="button" id="btnNext" class="btn-next hidden">Next Word →</button>
+</div>
+
+<div id="feedbackBox" class="feedback-box" role="status"></div>
+</section>
+
+<!-- Main Game Results Summary View -->
+<section id="mainSummaryView" class="summary-card hidden">
+<h2 id="mainSummaryTitle" class="summary-title">Round Complete!</h2>
+<p id="mainSummarySubtitle" class="summary-subtitle"></p>
+
+<div class="score-highlight">
+<div id="finalPercentage" class="score-big">0%</div>
+<div id="finalScoreSummary" class="score-detail"></div>
+</div>
+
+<div id="missedWordsContainer" class="word-list-box hidden">
+<h3>Words Missed During This Round:</h3>
+<div id="missedWordsList" class="word-pills"></div>
+</div>
+
+<div class="summary-actions">
+<button type="button" id="btnReviewMistakes" class="btn-primary hidden">🔄 Review My Mistakes</button>
+<button type="button" id="btnPlayAgainMain" class="btn-secondary">Play Again</button>
+</div>
+</section>
+
+<!-- Review Round Summary View -->
+<section id="reviewSummaryView" class="summary-card hidden">
+<h2 id="reviewSummaryTitle" class="summary-title">Mistake Review Complete!</h2>
+<p id="reviewSummarySubtitle" class="summary-subtitle"></p>
+
+<div class="score-highlight">
+<div id="reviewCorrectedCount" class="score-big">0 / 0</div>
+<div id="reviewSummaryBreakdown" class="score-detail"></div>
+</div>
+
+<div id="stillPracticeContainer" class="word-list-box hidden">
+<h3>Words Still Needing Practice:</h3>
+<div id="stillPracticeList" class="word-pills"></div>
+</div>
+
+<div class="summary-actions">
+<button type="button" id="btnPracticeRemaining" class="btn-primary hidden">Practice Remaining Words</button>
+<button type="button" id="btnReviewAgain" class="btn-secondary">Review Again</button>
+<button type="button" id="btnBackToResults" class="btn-secondary">Back to Results</button>
+</div>
+</section>
+</main>
+
+<script>
+(function () {
+"use strict";
+
+// Exact spelling word list (18 words)
+const SPELLING_WORDS = Object.freeze([
+"Companions",
+"Scrubbed",
+"Unkind",
+"Bride",
+"Tie",
+"Tiara",
+"Foot",
+"Velvet"
+]);
+
+// Game State
+const state = {
+phase: "main", // "main" | "main-summary" | "review" | "review-summary"
+// Main round state
+mainQueue: [],
+mainIndex: 0,
+mainCorrectCount: 0,
+mainIncorrectAttempts: 0,
+mainWordResolved: false,
+mainWordFailedOnce: false,
+mainWordRevealed: false,
+// Mistakes recorded from main game: Map<wordLowerKey, { word: string, attempts: number }>
+mistakeMap: new Map(),
+// Review round state
+reviewQueue: [],
+reviewIndex: 0,
+reviewResolvedCleanly: new Set(), // words spelled right in review without revealing
+reviewNeedsPractice: new Set(), // words where spelling was revealed in review or still unresolved
+reviewWordResolved: false,
+reviewWordRevealed: false
+};
+
+// DOM References
+const els = {
+modePill: document.getElementById("modePill"),
+progressLabel: document.getElementById("progressLabel"),
+progressPercentText: document.getElementById("progressPercentText"),
+progressBarTrack: document.getElementById("progressBarTrack"),
+progressFill: document.getElementById("progressFill"),
+mainStatsBar: document.getElementById("mainStatsBar"),
+reviewStatsBar: document.getElementById("reviewStatsBar"),
+statCorrect: document.getElementById("statCorrect"),
+statIncorrect: document.getElementById("statIncorrect"),
+statScore: document.getElementById("statScore"),
+reviewCountReviewed: document.getElementById("reviewCountReviewed"),
+reviewCountRemaining: document.getElementById("reviewCountRemaining"),
+reviewCountPractice: document.getElementById("reviewCountPractice"),
+questionView: document.getElementById("questionView"),
+questionPrompt: document.getElementById("questionPrompt"),
+btnListenMain: document.getElementById("btnListenMain"),
+btnListenAgain: document.getElementById("btnListenAgain"),
+btnListenSlow: document.getElementById("btnListenSlow"),
+audioWarning: document.getElementById("audioWarning"),
+spellingInput: document.getElementById("spellingInput"),
+btnCheck: document.getElementById("btnCheck"),
+btnTryAgain: document.getElementById("btnTryAgain"),
+btnReveal: document.getElementById("btnReveal"),
+btnNext: document.getElementById("btnNext"),
+feedbackBox: document.getElementById("feedbackBox"),
+mainSummaryView: document.getElementById("mainSummaryView"),
+mainSummaryTitle: document.getElementById("mainSummaryTitle"),
+mainSummarySubtitle: document.getElementById("mainSummarySubtitle"),
+finalPercentage: document.getElementById("finalPercentage"),
+finalScoreSummary: document.getElementById("finalScoreSummary"),
+missedWordsContainer: document.getElementById("missedWordsContainer"),
+missedWordsList: document.getElementById("missedWordsList"),
+btnReviewMistakes: document.getElementById("btnReviewMistakes"),
+btnPlayAgainMain: document.getElementById("btnPlayAgainMain"),
+reviewSummaryView: document.getElementById("reviewSummaryView"),
+reviewSummaryTitle: document.getElementById("reviewSummaryTitle"),
+reviewSummarySubtitle: document.getElementById("reviewSummarySubtitle"),
+reviewCorrectedCount: document.getElementById("reviewCorrectedCount"),
+reviewSummaryBreakdown: document.getElementById("reviewSummaryBreakdown"),
+stillPracticeContainer: document.getElementById("stillPracticeContainer"),
+stillPracticeList: document.getElementById("stillPracticeList"),
+btnPracticeRemaining: document.getElementById("btnPracticeRemaining"),
+btnReviewAgain: document.getElementById("btnReviewAgain"),
+btnBackToResults: document.getElementById("btnBackToResults")
+};
+
+// Fisher-Yates shuffle
+function shuffleArray(items) {
+const copy = items.slice();
+for (let i = copy.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[copy[i], copy[j]] = [copy[j], copy[i]];
+}
+return copy;
+}
+
+// Speech synthesis helpers
+const speechSupported =
+typeof window !== "undefined" &&
+"speechSynthesis" in window &&
+typeof SpeechSynthesisUtterance !== "undefined";
+
+let selectedVoice = null;
+
+function chooseNaturalEnglishVoice() {
+if (!speechSupported) return null;
+const voices = window.speechSynthesis.getVoices() || [];
+if (!voices.length) return null;
+
+const preferredNames = [
+"Google US English",
+"Google UK English Female",
+"Google UK English Male",
+"Samantha",
+"Daniel",
+"Alex",
+"Natural"
+];
+
+for (const name of preferredNames) {
+const match = voices.find((v) => v.name.includes(name) && v.lang.toLowerCase().startsWith("en"));
+if (match) return match;
+}
+
+return (
+voices.find((v) => v.lang === "en-US") ||
+voices.find((v) => v.lang.toLowerCase().startsWith("en")) ||
+voices[0]
+);
+}
+
+if (speechSupported) {
+selectedVoice = chooseNaturalEnglishVoice();
+if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+window.speechSynthesis.onvoiceschanged = () => {
+selectedVoice = chooseNaturalEnglishVoice();
+};
+}
+} else {
+els.audioWarning.style.display = "block";
+}
+
+function speakTargetWord(word, slow = false) {
+if (!speechSupported) {
+els.audioWarning.style.display = "block";
+return;
+}
+try {
+window.speechSynthesis.cancel();
+const utterance = new SpeechSynthesisUtterance(word);
+if (!selectedVoice) {
+selectedVoice = chooseNaturalEnglishVoice();
+}
+if (selectedVoice) {
+utterance.voice = selectedVoice;
+}
+utterance.lang = (selectedVoice && selectedVoice.lang) || "en-US";
+utterance.rate = slow ? 0.68 : 0.96;
+utterance.pitch = 1.02;
+utterance.volume = 1.0;
+
+utterance.onerror = () => {
+els.audioWarning.style.display = "block";
+};
+
+window.speechSynthesis.speak(utterance);
+} catch (err) {
+els.audioWarning.style.display = "block";
+}
+}
+
+function getCurrentTargetWord() {
+if (state.phase === "main") {
+return state.mainQueue[state.mainIndex] || "";
+}
+if (state.phase === "review") {
+return state.reviewQueue[state.reviewIndex] || "";
+}
+return "";
+}
+
+function normalizeAnswer(raw) {
+return raw.trim().toLowerCase();
+}
+
+function setFeedback(type, htmlContent) {
+els.feedbackBox.className = `feedback-box ${type}`;
+els.feedbackBox.innerHTML = htmlContent;
+}
+
+function clearFeedback() {
+els.feedbackBox.className = "feedback-box";
+els.feedbackBox.innerHTML = "";
+}
+
+function updateProgressUI() {
+if (state.phase === "main") {
+const total = state.mainQueue.length;
+const currentNumber = Math.min(state.mainIndex + 1, total);
+const completed = state.mainIndex + (state.mainWordResolved ? 1 : 0);
+const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+els.progressLabel.textContent = `Word ${currentNumber} of ${total}`;
+els.progressPercentText.textContent = `${pct}% complete`;
+els.progressFill.style.width = `${pct}%`;
+els.progressBarTrack.setAttribute("aria-valuenow", String(pct));
+
+els.statCorrect.textContent = String(state.mainCorrectCount);
+els.statIncorrect.textContent = String(state.mainIncorrectAttempts);
+els.statScore.textContent = `${state.mainCorrectCount} / ${total}`;
+} else if (state.phase === "review") {
+const total = state.reviewQueue.length;
+const reviewedCount = state.reviewIndex + (state.reviewWordResolved ? 1 : 0);
+const remainingCount = Math.max(total - reviewedCount, 0);
+const pct = total > 0 ? Math.round((reviewedCount / total) * 100) : 0;
+
+els.progressLabel.textContent = `Mistake ${Math.min(state.reviewIndex + 1, total)} of ${total}`;
+els.progressPercentText.textContent = `${pct}% reviewed`;
+els.progressFill.style.width = `${pct}%`;
+els.progressBarTrack.setAttribute("aria-valuenow", String(pct));
+
+els.reviewCountReviewed.textContent = String(reviewedCount);
+els.reviewCountRemaining.textContent = String(remainingCount);
+els.reviewCountPractice.textContent = String(state.reviewNeedsPractice.size);
+}
+}
+
+function prepareQuestionUI() {
+clearFeedback();
+els.spellingInput.value = "";
+els.spellingInput.disabled = false;
+els.btnCheck.classList.remove("hidden");
+els.btnCheck.disabled = false;
+els.btnTryAgain.classList.add("hidden");
+els.btnReveal.classList.remove("hidden");
+els.btnReveal.disabled = false;
+els.btnNext.classList.add("hidden");
+
+if (state.phase === "main") {
+els.modePill.textContent = "Main Spelling Round";
+els.modePill.classList.remove("review-mode");
+els.mainStatsBar.classList.remove("hidden");
+els.reviewStatsBar.classList.add("hidden");
+els.questionPrompt.innerHTML = "Click <strong>Listen to the Word</strong> to hear your word, then type how you spell it.";
+state.mainWordResolved = false;
+state.mainWordFailedOnce = false;
+state.mainWordRevealed = false;
+} else if (state.phase === "review") {
+els.modePill.textContent = "Mistake Review Round";
+els.modePill.classList.add("review-mode");
+els.mainStatsBar.classList.add("hidden");
+els.reviewStatsBar.classList.remove("hidden");
+els.questionPrompt.innerHTML = "Listen closely to this missed word and try spelling it again!";
+state.reviewWordResolved = false;
+state.reviewWordRevealed = false;
+}
+
+els.questionView.classList.remove("hidden");
+els.mainSummaryView.classList.add("hidden");
+els.reviewSummaryView.classList.add("hidden");
+
+updateProgressUI();
+els.spellingInput.focus();
+}
+
+function startMainGame() {
+state.phase = "main";
+state.mainQueue = shuffleArray(SPELLING_WORDS);
+state.mainIndex = 0;
+state.mainCorrectCount = 0;
+state.mainIncorrectAttempts = 0;
+state.mistakeMap.clear();
+state.reviewQueue = [];
+state.reviewIndex = 0;
+state.reviewResolvedCleanly.clear();
+state.reviewNeedsPractice.clear();
+
+prepareQuestionUI();
+}
+
+function recordMainMistake(word) {
+const key = word.toLowerCase();
+const existing = state.mistakeMap.get(key);
+if (existing) {
+existing.attempts += 1;
+} else {
+state.mistakeMap.set(key, { word, attempts: 1 });
+}
+}
+
+function handleCheckAnswer() {
+const targetWord = getCurrentTargetWord();
+if (!targetWord) return;
+
+const typedRaw = els.spellingInput.value;
+const normalizedTyped = normalizeAnswer(typedRaw);
+const normalizedTarget = targetWord.toLowerCase();
+
+if (!normalizedTyped) {
+setFeedback("info", "Please type a spelling in the box before checking your answer.");
+els.spellingInput.focus();
+return;
+}
+
+const isCorrect = normalizedTyped === normalizedTarget;
+
+if (state.phase === "main") {
+if (state.mainWordResolved) return;
+
+if (isCorrect) {
+state.mainWordResolved = true;
+// Count every word the student eventually types correctly,
+// including after using Show Correct Spelling.
+state.mainCorrectCount += 1;
+els.spellingInput.disabled = true;
+els.btnCheck.classList.add("hidden");
+els.btnTryAgain.classList.add("hidden");
+els.btnReveal.classList.add("hidden");
+els.btnNext.classList.remove("hidden");
+els.btnNext.textContent =
+state.mainIndex + 1 < state.mainQueue.length ? "Next Word →" : "See Results →";
+
+setFeedback(
+"success",
+`Awesome job! You spelled <strong>${targetWord}</strong> accurately.`
+);
+updateProgressUI();
+els.btnNext.focus();
+} else {
+state.mainIncorrectAttempts += 1;
+state.mainWordFailedOnce = true;
+recordMainMistake(targetWord);
+
+els.btnCheck.classList.add("hidden");
+els.btnTryAgain.classList.remove("hidden");
+els.btnReveal.classList.remove("hidden");
+
+setFeedback(
+"error",
+"Not quite! Listen again or click <strong>Try Again</strong> for another attempt."
+);
+updateProgressUI();
+els.btnTryAgain.focus();
+}
+} else if (state.phase === "review") {
+if (state.reviewWordResolved) return;
+
+if (isCorrect) {
+state.reviewWordResolved = true;
+els.spellingInput.disabled = true;
+els.btnCheck.classList.add("hidden");
+els.btnTryAgain.classList.add("hidden");
+els.btnReveal.classList.add("hidden");
+els.btnNext.classList.remove("hidden");
+els.btnNext.textContent =
+state.reviewIndex + 1 < state.reviewQueue.length ? "Next Mistake →" : "Finish Review →";
+
+if (state.reviewWordRevealed) {
+state.reviewNeedsPractice.add(targetWord);
+setFeedback(
+"info",
+`Nice work typing <strong>${targetWord}</strong>. Since the spelling was revealed earlier, we'll keep it marked for extra practice.`
+);
+} else {
+state.reviewNeedsPractice.delete(targetWord);
+state.reviewResolvedCleanly.add(targetWord);
+setFeedback(
+"success",
+`Great work! You spelled <strong>${targetWord}</strong> correctly on your own.`
+);
+}
+
+updateProgressUI();
+els.btnNext.focus();
+} else {
+state.reviewNeedsPractice.add(targetWord);
+els.btnCheck.classList.add("hidden");
+els.btnTryAgain.classList.remove("hidden");
+els.btnReveal.classList.remove("hidden");
+
+setFeedback(
+"error",
+"Keep going! Listen to the word again and click <strong>Try Again</strong> to give it another shot."
+);
+updateProgressUI();
+els.btnTryAgain.focus();
+}
+}
+}
+
+function handleTryAgain() {
+clearFeedback();
+els.spellingInput.disabled = false;
+els.spellingInput.value = "";
+els.btnTryAgain.classList.add("hidden");
+els.btnCheck.classList.remove("hidden");
+els.btnCheck.disabled = false;
+
+// Do not show the reveal button again after the answer has been revealed.
+const answerWasRevealed =
+state.phase === "main" ? state.mainWordRevealed : state.reviewWordRevealed;
+if (answerWasRevealed) {
+els.btnReveal.classList.add("hidden");
+} else {
+els.btnReveal.classList.remove("hidden");
+}
+
+els.spellingInput.focus();
+}
+
+function handleRevealSpelling() {
+const targetWord = getCurrentTargetWord();
+if (!targetWord) return;
+
+if (state.phase === "main") {
+// Reveal the answer, but keep this question active so the student
+// can try typing the same word again.
+state.mainWordRevealed = true;
+// Revealing the answer marks the word for review, but is not an
+// additional incorrect typed attempt. Avoid duplicating a mistake
+// already recorded after one or more wrong submissions.
+if (!state.mainWordFailedOnce) {
+recordMainMistake(targetWord);
+}
+} else if (state.phase === "review") {
+state.reviewWordRevealed = true;
+state.reviewNeedsPractice.add(targetWord);
+}
+
+els.spellingInput.disabled = true;
+els.btnCheck.classList.add("hidden");
+els.btnReveal.classList.add("hidden");
+els.btnNext.classList.add("hidden");
+els.btnTryAgain.classList.remove("hidden");
+
+setFeedback(
+"info",
+`Study the correct spelling:<br /><span class="revealed-word">${targetWord}</span><br /><br />When you are ready, click <strong>Try Again</strong> and type the same word yourself.`
+);
+
+updateProgressUI();
+els.btnTryAgain.focus();
+}
+
+function handleNextWord() {
+if (state.phase === "main") {
+if (state.mainIndex + 1 < state.mainQueue.length) {
+state.mainIndex += 1;
+prepareQuestionUI();
+} else {
+showMainResults();
+}
+} else if (state.phase === "review") {
+if (state.reviewIndex + 1 < state.reviewQueue.length) {
+state.reviewIndex += 1;
+prepareQuestionUI();
+} else {
+showReviewResults();
+}
+}
+}
+
+function showMainResults() {
+state.phase = "main-summary";
+els.questionView.classList.add("hidden");
+els.reviewSummaryView.classList.add("hidden");
+els.mainSummaryView.classList.remove("hidden");
+els.mainStatsBar.classList.remove("hidden");
+els.reviewStatsBar.classList.add("hidden");
+
+els.modePill.textContent = "Final Results";
+els.modePill.classList.remove("review-mode");
+
+const total = state.mainQueue.length;
+const pct = total > 0 ? Math.round((state.mainCorrectCount / total) * 100) : 0;
+
+els.progressLabel.textContent = `Completed ${total} of ${total}`;
+els.progressPercentText.textContent = "100% complete";
+els.progressFill.style.width = "100%";
+els.progressBarTrack.setAttribute("aria-valuenow", "100");
+updateProgressUI();
+
+els.finalPercentage.textContent = `${pct}%`;
+els.finalScoreSummary.textContent = `Final Score: ${state.mainCorrectCount} out of ${total} words • Incorrect attempts: ${state.mainIncorrectAttempts}`;
+
+const missedEntries = Array.from(state.mistakeMap.values());
+
+if (missedEntries.length === 0) {
+els.mainSummaryTitle.textContent = "Outstanding Spelling!";
+els.mainSummarySubtitle.textContent =
+"Congratulations! You spelled every single word accurately with zero mistakes!";
+els.missedWordsContainer.classList.add("hidden");
+els.btnReviewMistakes.classList.add("hidden");
+} else {
+els.mainSummaryTitle.textContent = "Nice Effort — Review Time!";
+els.mainSummarySubtitle.textContent = `You missed ${missedEntries.length} ${missedEntries.length === 1 ? "word" : "words"}. Use Review My Mistakes to practice them!`;
+
+els.missedWordsList.innerHTML = "";
+for (const entry of missedEntries) {
+const pill = document.createElement("span");
+pill.className = "word-pill";
+pill.textContent = `${entry.word} (${entry.attempts} ${entry.attempts === 1 ? "try" : "tries"})`;
+els.missedWordsList.appendChild(pill);
+}
+els.missedWordsContainer.classList.remove("hidden");
+els.btnReviewMistakes.classList.remove("hidden");
+}
+}
+
+function startReviewRound(wordsToPractice) {
+if (!wordsToPractice || wordsToPractice.length === 0) return;
+
+state.phase = "review";
+state.reviewQueue = shuffleArray(wordsToPractice);
+state.reviewIndex = 0;
+
+// Ensure every word entering this review round is tracked if not yet mastered cleanly
+for (const w of state.reviewQueue) {
+if (!state.reviewResolvedCleanly.has(w)) {
+state.reviewNeedsPractice.add(w);
+}
+}
+
+prepareQuestionUI();
+}
+
+function showReviewResults() {
+state.phase = "review-summary";
+els.questionView.classList.add("hidden");
+els.mainSummaryView.classList.add("hidden");
+els.reviewSummaryView.classList.remove("hidden");
+els.mainStatsBar.classList.add("hidden");
+els.reviewStatsBar.classList.remove("hidden");
+
+els.modePill.textContent = "Review Summary";
+els.modePill.classList.add("review-mode");
+
+const originallyMissedCount = state.mistakeMap.size;
+const correctedCount = state.reviewResolvedCleanly.size;
+const stillPracticeWords = Array.from(state.reviewNeedsPractice).filter(
+(w) => !state.reviewResolvedCleanly.has(w)
+);
+
+els.progressLabel.textContent = "Review Round Finished";
+els.progressPercentText.textContent = "100% reviewed";
+els.progressFill.style.width = "100%";
+els.progressBarTrack.setAttribute("aria-valuenow", "100");
+els.reviewCountReviewed.textContent = String(state.reviewQueue.length);
+els.reviewCountRemaining.textContent = "0";
+els.reviewCountPractice.textContent = String(stillPracticeWords.length);
+
+els.reviewCorrectedCount.textContent = `${correctedCount} / ${originallyMissedCount}`;
+els.reviewSummaryBreakdown.textContent =
+`Originally missed: ${originallyMissedCount} • Successfully corrected: ${correctedCount} • Still needing practice: ${stillPracticeWords.length}`;
+
+if (stillPracticeWords.length > 0) {
+els.reviewSummaryTitle.textContent = "Keep Practicing!";
+els.reviewSummarySubtitle.textContent =
+"You can start another review round right now for the words that still need practice.";
+els.stillPracticeList.innerHTML = "";
+for (const word of stillPracticeWords) {
+const pill = document.createElement("span");
+pill.className = "word-pill";
+pill.textContent = word;
+els.stillPracticeList.appendChild(pill);
+}
+els.stillPracticeContainer.classList.remove("hidden");
+els.btnPracticeRemaining.classList.remove("hidden");
+} else {
+els.reviewSummaryTitle.textContent = "All Mistakes Mastered!";
+els.reviewSummarySubtitle.textContent =
+"Fantastic job! You spelled every missed word correctly without revealing the answer.";
+els.stillPracticeContainer.classList.add("hidden");
+els.btnPracticeRemaining.classList.add("hidden");
+}
+}
+
+// Event Listeners
+els.btnListenMain.addEventListener("click", () => {
+const word = getCurrentTargetWord();
+if (word) speakTargetWord(word, false);
+});
+
+els.btnListenAgain.addEventListener("click", () => {
+const word = getCurrentTargetWord();
+if (word) speakTargetWord(word, false);
+});
+
+els.btnListenSlow.addEventListener("click", () => {
+const word = getCurrentTargetWord();
+if (word) speakTargetWord(word, true);
+});
+
+els.btnCheck.addEventListener("click", handleCheckAnswer);
+els.btnTryAgain.addEventListener("click", handleTryAgain);
+els.btnReveal.addEventListener("click", handleRevealSpelling);
+els.btnNext.addEventListener("click", handleNextWord);
+
+els.spellingInput.addEventListener("keydown", (event) => {
+if (event.key === "Enter") {
+event.preventDefault();
+if (!els.btnCheck.classList.contains("hidden") && !els.btnCheck.disabled) {
+handleCheckAnswer();
+} else if (!els.btnTryAgain.classList.contains("hidden")) {
+handleTryAgain();
+} else if (!els.btnNext.classList.contains("hidden")) {
+handleNextWord();
+}
+}
+});
+
+els.btnReviewMistakes.addEventListener("click", () => {
+const missedWords = Array.from(state.mistakeMap.values()).map((item) => item.word);
+startReviewRound(missedWords);
+});
+
+els.btnPlayAgainMain.addEventListener("click", startMainGame);
+
+els.btnPracticeRemaining.addEventListener("click", () => {
+const remainingWords = Array.from(state.reviewNeedsPractice).filter(
+(w) => !state.reviewResolvedCleanly.has(w)
+);
+startReviewRound(remainingWords);
+});
+
+els.btnReviewAgain.addEventListener("click", () => {
+const allOriginalMistakes = Array.from(state.mistakeMap.values()).map((item) => item.word);
+state.reviewResolvedCleanly.clear();
+state.reviewNeedsPractice.clear();
+startReviewRound(allOriginalMistakes);
+});
+
+els.btnBackToResults.addEventListener("click", showMainResults);
+
+// Initialize Game
+startMainGame();
+})();
+</script>
+</body>
+</html>
+
+
